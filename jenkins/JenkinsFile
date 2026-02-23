@@ -3,6 +3,13 @@ pipeline {
 
     stages {
         stage('Unit tests - Backend') {
+            // adding a Go lang docker to run UT. another option is to add a golang plugin to Jenkins
+            agent {
+                docker {
+                    image 'snakee/golang-junit:1.21'
+                    reuseNode true 
+                }
+            }
             steps {
                dir('bugtracker-backend') {
                     sh 'go test -v ./...'
