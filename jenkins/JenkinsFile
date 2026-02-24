@@ -12,7 +12,7 @@ pipeline {
             }
             steps {
                dir('bugtracker-backend') {
-                     sh '''
+                    sh '''
                         # Set Go cache to a writable location
                         export GOCACHE="$PWD/.cache/go-build"
                         export GOMODCACHE="$PWD/.cache/go-mod"
@@ -22,6 +22,24 @@ pipeline {
                         
                         # Run the tests
                         go test -v ./...
+                    '''
+               }
+            }
+        }
+        
+        stage('Unit tests - Frontend') {
+            // adding a NPM docker. another option is to add a golang plugin to Jenkins
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    reuseNode true 
+                }
+            }
+            steps {
+               dir('bugtracker-frontend') {
+                    sh '''
+                    npm ci
+                    npm test
                     '''
                }
             }
